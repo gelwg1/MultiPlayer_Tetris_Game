@@ -244,7 +244,7 @@ int main()
     scoreCurrent.setCharacterSize(25);
     scoreCurrent.setPosition(240, 50);
 
-    float timer=0,delay=0.3;
+    float timer=0,delay=0.4;
     Clock clock;
     reset(Piece, field);
     while (window.isOpen())
