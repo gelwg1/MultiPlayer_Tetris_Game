@@ -208,7 +208,7 @@ void DeleteRow(bool field[N][M])
 void DeathCheck()
 {
     for (int i=0; i<4; i++)
-	if (Piece[i].y==0)
+	if (Piece[i].y==0 && Piece[i].x==4)
 	{
 	    cout<<"Final score: "<<Score<<endl;
 	    exit(0);
