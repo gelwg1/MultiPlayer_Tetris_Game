@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <sstream>
 #include <time.h>
-#include "Menu.h"
 using namespace std;
 using namespace sf;
 
@@ -245,84 +244,59 @@ int main()
     scoreCurrent.setStyle(Text::Regular);
     scoreCurrent.setCharacterSize(25);
     scoreCurrent.setPosition(240, 50);
-    reset(Piece, field);
-    //Initiate Clock---------------
+
     float timer=0,delay=0.4;
-    Event e;
-    float time ;
-    //-----------------------------
-
-    // Displaying menu-------------
-    Menu menu(window.getSize().x, window.getSize().y);
-    bool men = 0;
-    while (window.isOpen())
-    {
-        Event e;
-    	while (window.pollEvent(e))
-    	{
-            if (e.type == Event::Closed)
-        	window.close();
-        	if (e.type == Event::KeyPressed)
-        	if (e.key.code==Keyboard::Up) menu.MoveUp();
-        	else if (e.key.code==Keyboard::Down) menu.MoveDown();
-        	else if (e.key.code==Keyboard::Enter) men =1;
-    	}
-    	window.clear();
-    	menu.draw(window);
-        window.display();
-        usleep(20);
-        if(men == 1) break;
-    }
-    //-----------------------------
     Clock clock;
+    reset(Piece, field);
     while (window.isOpen())
     {
-        time = clock.getElapsedTime().asSeconds();
-        clock.restart();
-    	timer+=time;
-    	while (window.pollEvent(e))
-    	{
-    	    if (e.type == Event::Closed)
-    		window.close();
+	float time = clock.getElapsedTime().asSeconds();
+	clock.restart();
+	timer+=time;
+	Event e;
+	while (window.pollEvent(e))
+	{
+	    if (e.type == Event::Closed)
+		window.close();
 
-    	    if (e.type == Event::KeyPressed)
-    		if (e.key.code==Keyboard::Up) Rotate(Piece, field);
-    		else if (e.key.code==Keyboard::Left) MoveLeft(Piece, field);
-    		else if (e.key.code==Keyboard::Right) MoveRight(Piece, field);
-    	}
+	    if (e.type == Event::KeyPressed)
+		if (e.key.code==Keyboard::Up) Rotate(Piece, field);
+		else if (e.key.code==Keyboard::Left) MoveLeft(Piece, field);
+		else if (e.key.code==Keyboard::Right) MoveRight(Piece, field);
+	}
 
-    	if (Keyboard::isKeyPressed(Keyboard::Down)) delay=0.05;
-    	else delay = 0.4;
-    	if (timer>delay)
-    	{
-    	    if (canMoveDown())
-    		MoveDown(Piece,field);
-    	    else
-    	    {
-    		DeathCheck();
-    		DeleteRow(field);
-    		reset(Piece, field);
-    	    }
-    	    timer=0;
-    	}
-    	window.clear();
-    	window.draw(background);
-    	/*---------DRAW TABLE---------*/
-    	for (int i=0;i<N;i++)
-    	    for (int j=0;j<M;j++)
-    		if (field[i][j]==1)
-    		{
-    		    s.setPosition(i*20+5,j*20+5);
-    		    window.draw(s);
-    		}
-    	stringstream s;
-    	s << Score;
-    	scoreCurrent.setString(s.str());
+	if (Keyboard::isKeyPressed(Keyboard::Down)) delay=0.05;
+	else delay = 0.3;
+	if (timer>delay)
+	{
+	    if (canMoveDown())
+		MoveDown(Piece,field);
+	    else
+	    {
+		DeathCheck();
+		DeleteRow(field);
+		reset(Piece, field);
+	    }
+	    timer=0;
+	}
+	window.clear();
+	window.draw(background);
+	/*---------DRAW TABLE---------*/
+	for (int i=0;i<N;i++)
+	    for (int j=0;j<M;j++)
+		if (field[i][j]==1)
+		{
+		    s.setPosition(i*20+5,j*20+5);
+		    window.draw(s);
+		}
+	stringstream s;
+	s << Score;
+	scoreCurrent.setString(s.str());
 
-    	window.draw(score);
-    	window.draw(scoreCurrent);
-    	window.display();
-    	usleep(20);
+	window.draw(score);
+	window.draw(scoreCurrent);
+	window.display();
+	usleep(20);
     }
     return 0;
 }
