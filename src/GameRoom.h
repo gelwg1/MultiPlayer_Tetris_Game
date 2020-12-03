@@ -2,7 +2,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
-#define MAX_NUMBER_OF_ITEMS 3
+#define MAX_NUMBER_OF_PLAYERS 5
 
 class Menu
 {
@@ -10,13 +10,11 @@ public:
 	Menu(float width, float height);
 	~Menu();
 	int selectedItemIndex;
-	void draw(sf::RenderWindow &window);
-	void MoveUp();
-	void MoveDown();
+
 
 private:
-
+	void draw(sf::RenderWindow &window);
 	sf::Font font;
-	sf::Text menu[MAX_NUMBER_OF_ITEMS];
+	sf::Text PList[MAX_NUMBER_OF_PLAYERS];
 
 };

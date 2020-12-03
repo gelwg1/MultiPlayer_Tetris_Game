@@ -63,7 +63,8 @@ void RoomList::SetRooms(float height)
 	{
 		roomList[j].setFont(font);
 		roomList[j].setFillColor(sf::Color::Red);
-		roomList[j].setString("room "+ to_string(rooms[i]));
+		roomList[j].setString("room  "+ to_string(rooms[i]));
+		roomList[j].setCharacterSize(15);
 		roomList[j].setPosition(sf::Vector2f(50, height / (7 + 1) * j));
 		j++;
 	}

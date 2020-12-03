@@ -1,14 +1,22 @@
-all : main	clean
 
-main: main.o	game.o	Menu.o	RoomList.o
-	g++ main.o -o main RoomList.o -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system game.o Menu.o 
+CXX = g++
+LDLIBS=-lsfml-network  -lsfml-graphics  -lsfml-window  -lsfml-system
+CPPFLAGS= ./src/
+
+SRCS = game.cpp	Menu.cpp	RoomList.cpp
+OBJS = game.o Menu.o RoomList.o
+
+all	:	main	clean
+
+main:	main.o	${OBJS}
+	g++ -o main main.o ${OBJS} ${LDLIBS}
 main.o:	main.cpp
 	g++ -c main.cpp
-game.o:	game.cpp
-	g++ -c game.cpp
-Menu.o:	Menu.cpp
-	g++ -c Menu.cpp
-RoomList.o:	RoomList.cpp
-	g++ -c RoomList.cpp -lsfml-network
+game.o: ${CPPFLAGS}game.cpp
+	${CXX} -c ${CPPFLAGS}game.cpp
+Menu.o: ${CPPFLAGS}Menu.cpp
+	${CXX} -c ${CPPFLAGS}Menu.cpp
+RoomList.o: ${CPPFLAGS}RoomList.cpp
+	${CXX} -c ${CPPFLAGS}RoomList.cpp
 clean:
 	rm -f *.o *~
