@@ -1,13 +1,13 @@
 #include "Menu.h"
-#include "SFML/Graphics.hpp"
-using namespace sf;
-Menu::Menu(sf::RenderWindow &window)
+
+
+Menu::Menu(float width, float height)
 {
 	if (!font.loadFromFile("IMG/simplistic_regular.ttf"))
 	{
 		// handle error
 	}
-	float width = window.getSize().x; float height = window.getSize().y;
+
 	menu[0].setFont(font);
 	menu[0].setFillColor(sf::Color::Red);
 	menu[0].setString("Play");
@@ -22,25 +22,13 @@ Menu::Menu(sf::RenderWindow &window)
 	menu[2].setFillColor(sf::Color::White);
 	menu[2].setString("Joint Room");
 	menu[2].setPosition(sf::Vector2f(50, height / (MAX_NUMBER_OF_ITEMS + 1) * 3));
+
 	selectedItemIndex = 0;
-    bool men = 0;
-    while (window.isOpen())
-    {
-    	while (window.pollEvent(e))
-    	{
-            if (e.type == Event::Closed)
-        	window.close();
-        	if (e.type == Event::KeyPressed)
-        	if (e.key.code==Keyboard::Up) MoveUp();
-        	else if (e.key.code==Keyboard::Down) MoveDown();
-        	else if (e.key.code==Keyboard::Enter) men =1;
-    	}
-    	window.clear();
-    	draw(window);
-        window.display();
-        sf::sleep(sf::milliseconds(20));
-        if(men == 1) break;
-    }
+}
+
+
+Menu::~Menu()
+{
 }
 
 void Menu::draw(sf::RenderWindow &window)

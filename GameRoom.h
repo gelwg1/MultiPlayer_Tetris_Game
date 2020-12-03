@@ -1,3 +1,4 @@
+
 #pragma once
 #include "SFML/Graphics.hpp"
 
@@ -6,14 +7,15 @@
 class Menu
 {
 public:
-	Menu(sf::RenderWindow &window);
+	Menu(float width, float height);
+	~Menu();
 	int selectedItemIndex;
-
-private:
-	sf::Event e;
 	void draw(sf::RenderWindow &window);
 	void MoveUp();
 	void MoveDown();
+
+private:
+
 	sf::Font font;
 	sf::Text menu[MAX_NUMBER_OF_ITEMS];
 
