@@ -6,22 +6,27 @@
 #include <memory>
 using namespace std;
 using namespace sf;
+#define MAX_NUMBER_OF_PLAYERS 5
 
 class Server
 {
 	public:
-		Server(int PORT);
-
+		Server(int PORT, sf::RenderWindow &window,std::string PName);
+		void Waiting(sf::RenderWindow &window);
+		bool DoneWaiting = 0;
+		vector<sf::Text> PList;
 	private:
-		IpAddress ip = IpAddress::getLocalAddress();
-		std::array<int, 7> rooms = {0};
-		int NumberOfRooms = 0;
-		bool is_port_open(IpAddress ip, int port);
-		void ScanPort();
-		void SetRooms(float height);
+		void Broadcast();
+		Socket::Status status;
+		Packet packet;
+		int index=0;
+		vector <unique_ptr<TcpSocket>> socket;
 		void draw(sf::RenderWindow &window);
-		void MoveUp();
-		void MoveDown();
+		void takeIn(std::string mess);
+		string str;
+		sf::Text takeOut(std::string mess);
+		TcpListener listener;
+		Event e;
 		sf::Font font;
-		sf::Text roomList[7];
+
 };

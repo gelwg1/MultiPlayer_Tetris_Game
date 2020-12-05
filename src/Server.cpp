@@ -1,74 +1,98 @@
+#include "Server.h"
 
 
-int Server::Server(int PORT)
+Server::Server(int PORT, sf::RenderWindow &window, std::string PName)
 {
-    int index=0;
     // TcpSocket socket[5];
-    vector <unique_ptr<TcpSocket>> socket;
+    font.loadFromFile("IMG/simplistic_regular.ttf");
     socket.push_back(make_unique<TcpSocket>());
-
-    TcpListener listener;
-    string mess;
-
     cout<<"listening"<<endl;
-    listener.listen(7000);
+    listener.listen(PORT);
     listener.setBlocking(false);
-    Packet packet;
-
-    RenderWindow window(VideoMode(320, 100), "Game Server");
-    window.setFramerateLimit(50);
-    Event e;
-
-    while (window.isOpen())
+    takeIn(PName);
+}
+void Server::Broadcast()
+{
+    string mess;
+    for (int j=index-1; j>=0; j--)
     {
-    	while (window.pollEvent(e))
-    	{
-    	    if (e.type == Event::Closed)
-    		window.close();
+        mess = PList[j].getString();
+        packet<<mess;
+    }
+    for(auto const& value: socket) {
+        value->send(packet);
+    }
+    packet.clear();
+}
 
-            else if(e.type==Event::TextEntered)
-        	{
-                if (e.text.unicode == 13 && index>0)
-                {
-                    packet<<mess;
-                    for (int j=0; j<index; j++)
-                    {
-                		socket[j]->send(packet);
-                        mess.clear();
-                    }
-                }
-                else mess.push_back(e.text.unicode);
-        	}
-    	}
-        if (listener.accept(*socket[index]) == Socket::Done)
+void Server::Waiting(sf::RenderWindow &window)
+{
+    while (window.pollEvent(e))
+    {
+        if (e.type == Event::Closed)
+        window.close();
+        if (e.type == Event::KeyPressed && e.key.code==Keyboard::Enter)
+            DoneWaiting = 1;
+        // else if(e.type==Event::TextEntered)
+        // {
+        //     if (e.text.unicode == 13 && index>0)
+        //     {
+        //         packet<<mess;
+        //         for (int j=0; j<index; j++)
+        //         {
+        //     		socket[j]->send(packet);
+        //             mess.clear();
+        //         }
+        //     }
+        //     else mess.push_back(e.text.unicode);
+        // }
+    }
+    if (listener.accept(*socket[index]) == Socket::Done)//Bug: Rec Scanner
+    {
+
+        socket[index]->setBlocking(false);
+        socket[index]->receive(packet);//Read in PName
+        packet>>str;
+        if (str != "")
         {
-            cout<< "Connected to a new client"<<endl;
-            socket[index]->setBlocking(false);
+            cout<<"Player : "+str<<endl;
+
             socket.push_back(make_unique<TcpSocket>());
             index++;
+            takeIn(str);
+            Broadcast();
         }
-        if (index>0)
-        for (int j=0; j<index; j++)
-        {
-            Socket::Status status = socket[j]->receive(packet);
-    		if (status == Socket::Done)
-    		{
-                cout<<"received message: ";
-                packet>>mess;
-                cout<<mess<<endl;
-                mess.clear();
-    		}
-            else if (status == Socket::Disconnected)
-            {
-                cout<<"a user disconnected "<<endl;
-                socket.erase (socket.begin()+j);
-                index--;
-            }
-        }
-        window.clear(Color::White);
-        window.display();
-    	usleep(200);
     }
+    for (int j=0; j<index; j++)
+    {
+        status = socket[j]->receive(packet);
+        if (status == Socket::Disconnected)
+        {
+            socket.erase (socket.begin()+j);
+            PList.erase (PList.begin()+j);
+            index--;
+            Broadcast();
+        }
+    }
+}
 
-	return 0;
+void Server::takeIn(std::string mess)
+{
+    PList.push_back(sf::Text());
+    PList[index].setFont(font);
+    PList[index].setFillColor(sf::Color::Red);
+    PList[index].setString(mess);
+    PList[index].setCharacterSize(20);
+    PList[index].setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (index+1)));
+}
+
+sf::Text Server::takeOut(std::string mess)
+{
+    sf::Text NterName;
+    NterName.setFont(font);
+    NterName.setFillColor(sf::Color::Red);
+    NterName.setString(mess);
+    NterName.setCharacterSize(20);
+    NterName.setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * 1));
+    return NterName;
 }

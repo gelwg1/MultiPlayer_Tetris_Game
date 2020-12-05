@@ -33,6 +33,7 @@ Game::Game()
 }
 void Game::ChayGame(sf::RenderWindow &window)
 {
+    changescore = 0;
     timecount = clock.getElapsedTime().asSeconds();
     clock.restart();
 	timer+=timecount;
@@ -267,6 +268,7 @@ void Game::DeleteRow()
     	}
     }
     Score += CountScore(Point);
+    changescore = 1;
 }
 void Game::DeathCheck()
 {

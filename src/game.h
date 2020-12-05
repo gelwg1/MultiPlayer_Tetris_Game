@@ -11,6 +11,7 @@ class Game
     	Game();
         void ChayGame(sf::RenderWindow &window);
     	int Score;
+        bool changescore;
     private:
         bool field[N][M] = {0};
         struct Point    {int x,y;} Piece[4];
@@ -19,7 +20,7 @@ class Game
         Sprite s, background;
         Font myFont;
         Text score;
-        Text scoreCurrent;
+        Text scoreCurrent;    
         float timer=0,delay=0.4;
         Event e;
         float timecount ;

@@ -10,10 +10,10 @@ class RoomList
 	public:
 		RoomList(sf::RenderWindow &window);
 		int Index;
+		std::array<int, 7> rooms = {0};
 
 	private:
 		IpAddress ip = IpAddress::getLocalAddress();
-		std::array<int, 7> rooms = {0};
 		int NumberOfRooms = 0;
 		bool is_port_open(IpAddress ip, int port);
 		void ScanPort();

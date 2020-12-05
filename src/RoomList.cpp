@@ -8,13 +8,13 @@ RoomList::RoomList(sf::RenderWindow &window)
 		// handle error
 	}
 
-	Index = 1;
+	Index = 0;
 	bool men = 0;
 	Clock clock;
 	Event e;
 	while (window.isOpen())
 	{
-		if(clock.getElapsedTime().asSeconds()>2)
+		if(clock.getElapsedTime().asSeconds()>1)
 		{
 			clock.restart();
 			ScanPort();
@@ -46,7 +46,7 @@ void RoomList::ScanPort()
 {
 	rooms.fill(0);
 	int j=0;
-	for (int i=5000; i<=8000; i++)
+	for (int i=7000; i<=8000; i++)
 	{
 		if (is_port_open(ip, i) && j<7)
 		{
@@ -79,7 +79,7 @@ void RoomList::draw(sf::RenderWindow &window)
 
 void RoomList::MoveUp()
 {
-	if (Index > 1)
+	if (Index > 0)
 	{
 		roomList[Index].setFillColor(sf::Color::White);
 		Index--;
@@ -89,7 +89,7 @@ void RoomList::MoveUp()
 
 void RoomList::MoveDown()
 {
-	if (Index < NumberOfRooms)
+	if (Index < (NumberOfRooms-1))
 	{
 		roomList[Index].setFillColor(sf::Color::White);
 		Index++;

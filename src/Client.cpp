@@ -1,64 +1,58 @@
-#include <iostream>
-#include <SFML/Network.hpp>
-#include <SFML/Graphics.hpp>
-#include <unistd.h>
-using namespace std;
-using namespace sf;
+#include "Client.h"
 
-bool is_port_open(IpAddress ip, int port)
+
+Client::Client(int PORT)
 {
-    return (TcpSocket().connect(ip, port) == Socket::Done);
+    font.loadFromFile("IMG/simplistic_regular.ttf");
+    socket.connect(ip, PORT);
+    socket.setBlocking(false);
+
+            // else if(e.type==Event::TextEntered)
+        	// {
+            //     cout<<(char)(e.text.unicode);
+            //     if (e.text.unicode == 13)
+            //     {
+            //         packet<<mess;
+            //         socket.send(packet);
+            //         mess.clear();
+            //     }
+            //     else mess.push_back(e.text.unicode);
+        	// }
+
+}
+void Client::SendPoint(string mess)
+{
+    packet<<mess;
+    socket.send(packet);
+    packet.clear();
+}
+bool Client::ReceiName(sf::RenderWindow &window)
+{
+    while (window.pollEvent(e))
+    {
+        if (e.type == Event::Closed)
+        window.close();
+    }
+    if(socket.receive(packet) == Socket::Done)
+    {
+        string buf;
+        while(1){
+            packet>>buf;
+            if (buf == "") break;
+            takeOut(buf);
+            index++;
+        }
+        return 1;
+    }
+    return 0;
 }
 
-int main(int argc, char* argv[])
+void Client::takeOut(std::string mess)
 {
-    IpAddress ip = IpAddress::getLocalAddress();
-    TcpSocket socket;
-    string mess;
-    Packet packet;
-    cout<<"Connecting" <<endl;
-    // for (int i=6000; i<=7500; i++)
-    // {
-    //     if (is_port_open(ip, i))
-    //         cout<<i<<" port detected"<<endl;
-    // }
-    socket.connect(ip, 7000);
-    socket.setBlocking(false);
-    cout<<"Connected" <<endl;
-
-    RenderWindow window(VideoMode(320, 100), "Game Client");
-    window.setFramerateLimit(50);
-    Event e;
-
-    while (window.isOpen())
-    {
-    	while (window.pollEvent(e))
-    	{
-    	    if (e.type == Event::Closed)
-    		window.close();
-
-            else if(e.type==Event::TextEntered)
-        	{
-                cout<<(char)(e.text.unicode);
-                if (e.text.unicode == 13)
-                {
-                    packet<<mess;
-                    socket.send(packet);
-                    mess.clear();
-                }
-                else mess.push_back(e.text.unicode);
-        	}
-    	}
-		if(socket.receive(packet) == Socket::Done)
-		{
-            packet>>mess;
-            cout<<mess<<endl;
-            mess.clear();
-		}
-        window.clear(Color::White);
-        window.display();
-    	usleep(200);
-    }
-
-	return 0;
+    PList.push_back(sf::Text());
+    PList[index].setFont(font);
+    PList[index].setFillColor(sf::Color::Red);
+    PList[index].setString(mess);
+    PList[index].setCharacterSize(20);
+    PList[index].setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (index+1)));
 }
