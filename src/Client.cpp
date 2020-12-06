@@ -22,9 +22,9 @@ Client::Client(int PORT)
 }
 void Client::SendPoint(string mess)
 {
+    packet.clear();
     packet<<mess;
     socket.send(packet);
-    packet.clear();
 }
 bool Client::ReceiName(sf::RenderWindow &window)
 {
@@ -39,6 +39,7 @@ bool Client::ReceiName(sf::RenderWindow &window)
         while(1){
             packet>>buf;
             if (buf == "") break;
+            else if(buf == "OK") {DoneWaiting = 1;break;}
             takeOut(buf);
             index++;
         }
@@ -55,4 +56,19 @@ void Client::takeOut(std::string mess)
     PList[index].setString(mess);
     PList[index].setCharacterSize(20);
     PList[index].setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (index+1)));
+}
+
+void Client::InitiatePoint()
+{
+    for (int i=0; i<PList.size(); i++)
+    {
+        PList[i].setPosition(sf::Vector2f(220, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+        PPoint.push_back(sf::Text());
+        PPoint[i].setFont(font);
+        PPoint[i].setFillColor(sf::Color::Red);
+        PPoint[i].setString("0");
+        PPoint[i].setCharacterSize(20);
+        PPoint[i].setPosition(sf::Vector2f(250, 20+480 /(MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+    }
+
 }

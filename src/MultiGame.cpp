@@ -4,11 +4,11 @@
 #include <unistd.h>
 #include <sstream>
 #include <time.h>
-#include "game.h"
+#include "MultiGame.h"
 using namespace std;
 using namespace sf;
 
-Game::Game()
+MultiGame::MultiGame()
 {
     srand(time(NULL));
     t1.loadFromFile("IMG/Pit.png");
@@ -16,22 +16,10 @@ Game::Game()
     Score = 0;
     s.setTexture(t2); background.setTexture(t1);
     myFont.loadFromFile("IMG/simplistic_regular.ttf");
-    score.setFont(myFont);
-    score.setFillColor(Color::Red);
-    score.setStyle(sf::Text::Regular);
-    score.setString("Score");
-    score.setCharacterSize(25);
-    score.setPosition(220, 20);
-
-    scoreCurrent.setFont(myFont);
-    scoreCurrent.setFillColor(Color::Red);
-    scoreCurrent.setStyle(Text::Regular);
-    scoreCurrent.setCharacterSize(25);
-    scoreCurrent.setPosition(240, 50);
     reset();
 
 }
-void Game::ChayGame(sf::RenderWindow &window)
+void MultiGame::ChayGame(sf::RenderWindow &window)
 {
     changescore = 0;
     timecount = clock.getElapsedTime().asSeconds();
@@ -64,8 +52,8 @@ void Game::ChayGame(sf::RenderWindow &window)
 	window.clear();
 	window.draw(background);
 	/*---------DRAW TABLE---------*/
-	for (int i=0;i<N;i++)
-	    for (int j=0;j<M;j++)
+	for (int i=0;i<NN;i++)
+	    for (int j=0;j<MM;j++)
 		if (field[i][j]==1)
 		{
 		    s.setPosition(i*20+5,j*20+5);
@@ -73,15 +61,11 @@ void Game::ChayGame(sf::RenderWindow &window)
 		}
 	stringstream s;
 	s << Score;
-	scoreCurrent.setString(s.str());
 
-	window.draw(score);
-	window.draw(scoreCurrent);
-	window.display();
 	sf::sleep(sf::milliseconds(20));
 }
 
-void Game::reset()
+void MultiGame::reset()
 {
     int PieceType =  1 + (rand() % 7);
     switch (PieceType) {
@@ -131,7 +115,7 @@ void Game::reset()
     for (int i=0;i<4;i++)
 	field[Piece[i].x][Piece[i].y] = 1;
 }
-bool Game::check(int x, int y)
+bool MultiGame::check(int x, int y)
 {
     for (int i=0; i<4; i++)
     {
@@ -140,16 +124,16 @@ bool Game::check(int x, int y)
     }
     return 1;
 }
-bool Game::canMoveDown()
+bool MultiGame::canMoveDown()
 {
 
     for (int i=0;i<4;i++)
 	if (((field[Piece[i].x][Piece[i].y+1]==1) && check(Piece[i].x,Piece[i].y+1))
-		|| (Piece[i].y == M-1))
+		|| (Piece[i].y == MM-1))
 	    return 0;
     return 1;
 }
-void Game::MoveDown()
+void MultiGame::MoveDown()
 {
     for (int i=0;i<4;i++)
     {
@@ -160,7 +144,7 @@ void Game::MoveDown()
 	field[Piece[i].x][Piece[i].y] = 1;
     Center.y++;
 }
-bool Game::CanMoveLeft()
+bool MultiGame::CanMoveLeft()
 {
     for (int i=0;i<4;i++)
 	if (((field[Piece[i].x-1][Piece[i].y]==1) && check(Piece[i].x-1,Piece[i].y))
@@ -168,7 +152,7 @@ bool Game::CanMoveLeft()
 	    return 0;
     return 1;
 }
-void Game::MoveLeft()
+void MultiGame::MoveLeft()
 {
     if(CanMoveLeft())
     {
@@ -182,15 +166,15 @@ void Game::MoveLeft()
 	Center.x--;
     }
 }
-bool Game::CanMoveRight()
+bool MultiGame::CanMoveRight()
 {
     for (int i=0;i<4;i++)
 	if (((field[Piece[i].x+1][Piece[i].y]==1) && check(Piece[i].x+1,Piece[i].y))
-		|| (Piece[i].x == N-1))
+		|| (Piece[i].x == NN-1))
 	    return 0;
     return 1;
 }
-void Game::MoveRight()
+void MultiGame::MoveRight()
 {
     if(CanMoveRight())
     {
@@ -204,7 +188,7 @@ void Game::MoveRight()
 	Center.x++;
     }
 }
-bool Game::CanRotate()
+bool MultiGame::CanRotate()
 {
     float posx, posy;
     for (int i=0; i<4; i++)
@@ -213,12 +197,12 @@ bool Game::CanRotate()
     	posy = Piece[i].y - Center.y;
     	int a = (int)(Center.x - posy);
     	int b = (int)(Center.y + posx);
-    	if ((field[a][b]==1 && check(a,b)) || !(a>=0 && b>=0 && a<N && b<M))
+    	if ((field[a][b]==1 && check(a,b)) || !(a>=0 && b>=0 && a<NN && b<MM))
     	    return 0;
     }
     return 1;
 }
-void Game::Rotate()
+void MultiGame::Rotate()
 {
     float posx, posy;
     if(CanRotate())
@@ -236,15 +220,15 @@ void Game::Rotate()
 	    field[Piece[i].x][Piece[i].y] = 1;
     }
 }
-void Game::MoveRows(int i)
+void MultiGame::MoveRows(int i)
 {
     for(int j=i; j>0; j--)
-	for(int q=0; q<N; q++)
+	for(int q=0; q<NN; q++)
 	    field[q][j] = field[q][j-1];
-    for (int q=0; q<N; q++)
+    for (int q=0; q<NN; q++)
 	field[1][0] = 0;
 }
-int Game::CountScore(int Point)
+int MultiGame::CountScore(int Point)
 {
     switch (Point)
     {
@@ -255,13 +239,13 @@ int Game::CountScore(int Point)
 	default : return 0;
     }
 }
-void Game::DeleteRow()
+void MultiGame::DeleteRow()
 {
     bool a; int Point = 0;
-    for (int i=0; i<M; i++)
+    for (int i=0; i<MM; i++)
     {
     	a = true;
-    	for (int j=0 ; j<N; j++)
+    	for (int j=0 ; j<NN; j++)
     	    a = a && field[j][i];
     	if (a)
     	{
@@ -271,7 +255,7 @@ void Game::DeleteRow()
     if (Point > 0) changescore = 1;
     Score += CountScore(Point);
 }
-void Game::DeathCheck()
+void MultiGame::DeathCheck()
 {
     for (int i=0; i<4; i++)
 	if (Piece[i].y==0 && Piece[i].x==4)
@@ -279,4 +263,14 @@ void Game::DeathCheck()
 	    cout<<"Final score: "<<Score<<endl;
 	    exit(0);
 	}
+}
+void MultiGame::PrintVector(sf::RenderWindow &window, std::vector<sf::Text> PList,
+     std::vector<sf::Text> PPoint)
+{
+    for(auto const& value: PList) {
+        window.draw(value);
+    }
+    for(auto const& value: PPoint) {
+        window.draw(value);
+    }
 }

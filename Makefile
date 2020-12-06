@@ -3,8 +3,8 @@ CXX = g++
 LDLIBS=-lsfml-network  -lsfml-graphics  -lsfml-window  -lsfml-system
 CPPFLAGS= ./src/
 
-SRCS = game.cpp	Menu.cpp	RoomList.cpp  Server.cpp  Client.cpp  GameRoom.cpp
-OBJS = game.o Menu.o RoomList.o  Server.o Client.o  GameRoom.o
+SRCS = game.cpp	Menu.cpp	RoomList.cpp  Server.cpp  Client.cpp  GameRoom.cpp MultiGame.cpp
+OBJS = game.o Menu.o RoomList.o  Server.o Client.o  GameRoom.o	MultiGame.o
 
 all	:	main	clean
 
@@ -24,5 +24,7 @@ Client.o: ${CPPFLAGS}Client.cpp
 	${CXX} -c ${CPPFLAGS}Client.cpp
 GameRoom.o: ${CPPFLAGS}GameRoom.cpp
 	${CXX} -c ${CPPFLAGS}GameRoom.cpp
+MultiGame.o: ${CPPFLAGS}MultiGame.cpp
+	${CXX} -c ${CPPFLAGS}MultiGame.cpp
 clean:
 	rm -f *.o *~

@@ -11,8 +11,12 @@ class Client
 	public:
 		Client(int PORT);
         void SendPoint(string mess);
-		vector<sf::Text> PList;
 		bool ReceiName(sf::RenderWindow &window);
+		void InitiatePoint();
+
+		vector<sf::Text> PList;
+		vector<sf::Text> PPoint;
+		bool DoneWaiting = 0;
 	private:
 		sf::Font font;
 		int index = 0;
@@ -20,5 +24,8 @@ class Client
         IpAddress ip = IpAddress::getLocalAddress();
         TcpSocket socket;
         Packet packet;
+
 		void takeOut(std::string mess);
+
+
 };

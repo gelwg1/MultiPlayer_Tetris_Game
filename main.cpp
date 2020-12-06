@@ -4,6 +4,7 @@
 #include "src/GameRoom.h"
 #include "src/Server.h"
 #include "src/Client.h"
+#include "src/MultiGame.h"
 
 using namespace std;
 using namespace sf;
@@ -14,7 +15,7 @@ int main()
     RenderWindow window(VideoMode(320, 480), "Tetris game");
     window.setFramerateLimit(50);
     Menu menu(window);
-    if (menu.selectedItemIndex == 2)//--Become Guest-----
+    if (menu.selectedItemIndex == 2)//--Become Guest----------------------
     {
         RoomList roomlist(window);
         GameRoom gameroom(window);//Lay ten nguoi choi
@@ -24,22 +25,36 @@ int main()
         {
             guest.ReceiName(window);
             gameroom.vaophong(guest.PList , window);
-            // if (runn.changescore)
-            // {
-            //     guest.SendPoint(to_string(runn.Score));
-            // }
+            if (guest.DoneWaiting == 1)
+            {
+                //cout<<"11"<<endl;
+                guest.InitiatePoint();
+                //cout<<"22"<<endl;
+                break;
+            }
+        }
+        MultiGame run;
+        while (window.isOpen())//Vao Game
+        {
+            run.ChayGame(window);
+            run.PrintVector(window, guest.PList, guest.PPoint);
+            window.display();
+            if (run.changescore == 1)
+            {
+                guest.SendPoint(to_string(run.Score));
+            }
         }
     }
     else if (menu.selectedItemIndex == 1)
     {//-----Become Server--------------------------------
         GameRoom gameroom(window);//Lay ten nguoi choi
-        Server Ngoi(7200, window, gameroom.PName);
+        Server Ngoi(window, gameroom.PName);
         while (window.isOpen())//Trong phong Game
         {
             if (Ngoi.DoneWaiting == 1)
             {
-                Game run;
-                run.ChayGame(window);
+                Ngoi.BroadcastOK();
+                break;
             }
             else
             {
@@ -47,8 +62,14 @@ int main()
                 gameroom.vaophong(Ngoi.PList , window);
             }
         }
+        Game run;
+        while (window.isOpen())//Vao Game
+        {
+            run.ChayGame(window);
+            Ngoi.RecScore();
+        }
     }
-    else
+    else//----------Single Player---------------
     {
         Game run;
         while (window.isOpen())

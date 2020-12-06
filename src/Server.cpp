@@ -1,9 +1,12 @@
 #include "Server.h"
 
 
-Server::Server(int PORT, sf::RenderWindow &window, std::string PName)
+Server::Server(sf::RenderWindow &window, std::string PName)
 {
     // TcpSocket socket[5];
+    srand((unsigned) time(0));
+    PORT = 7000 + (rand() % 1000);
+
     font.loadFromFile("IMG/simplistic_regular.ttf");
     socket.push_back(make_unique<TcpSocket>());
     cout<<"listening"<<endl;
@@ -19,6 +22,15 @@ void Server::Broadcast()
         mess = PList[j].getString();
         packet<<mess;
     }
+    for(auto const& value: socket) {
+        value->send(packet);
+    }
+    packet.clear();
+}
+void Server::BroadcastOK()
+{
+    string mess = "OK";
+    packet<<mess;
     for(auto const& value: socket) {
         value->send(packet);
     }
@@ -86,13 +98,18 @@ void Server::takeIn(std::string mess)
     PList[index].setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (index+1)));
 }
 
-sf::Text Server::takeOut(std::string mess)
+bool Server::RecScore()
 {
-    sf::Text NterName;
-    NterName.setFont(font);
-    NterName.setFillColor(sf::Color::Red);
-    NterName.setString(mess);
-    NterName.setCharacterSize(20);
-    NterName.setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * 1));
-    return NterName;
+    bool a=0;
+    std::string buf;
+    for (int j=0; j<index; j++)
+    {
+        if (socket[j]->receive(packet) == Socket::Done)
+        {
+            packet>>buf;
+            cout<<buf<<endl;
+            a=1;
+        }
+    }
+    return a;
 }
