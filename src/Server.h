@@ -17,13 +17,15 @@ class Server
 		void Waiting(sf::RenderWindow &window);
 		bool DoneWaiting = 0;
 		vector<sf::Text> PList;
+		vector<sf::Text> PPoint;
+
+		void InitiatePoint();
 		void BroadcastOK();
 		bool RecScore();
 	private:
 		void Broadcast();
 		void draw(sf::RenderWindow &window);
 		void takeIn(std::string mess);
-		sf::Text takeOut(std::string mess);
 
 		Socket::Status status;
 		Packet packet;

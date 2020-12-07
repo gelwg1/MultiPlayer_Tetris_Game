@@ -6,19 +6,6 @@ Client::Client(int PORT)
     font.loadFromFile("IMG/simplistic_regular.ttf");
     socket.connect(ip, PORT);
     socket.setBlocking(false);
-
-            // else if(e.type==Event::TextEntered)
-        	// {
-            //     cout<<(char)(e.text.unicode);
-            //     if (e.text.unicode == 13)
-            //     {
-            //         packet<<mess;
-            //         socket.send(packet);
-            //         mess.clear();
-            //     }
-            //     else mess.push_back(e.text.unicode);
-        	// }
-
 }
 void Client::SendPoint(string mess)
 {
@@ -28,6 +15,8 @@ void Client::SendPoint(string mess)
 }
 bool Client::ReceiName(sf::RenderWindow &window)
 {
+    packet.clear();
+    string buf;
     while (window.pollEvent(e))
     {
         if (e.type == Event::Closed)
@@ -35,7 +24,6 @@ bool Client::ReceiName(sf::RenderWindow &window)
     }
     if(socket.receive(packet) == Socket::Done)
     {
-        string buf;
         while(1){
             packet>>buf;
             if (buf == "") break;
@@ -70,5 +58,4 @@ void Client::InitiatePoint()
         PPoint[i].setCharacterSize(20);
         PPoint[i].setPosition(sf::Vector2f(250, 20+480 /(MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
     }
-
 }

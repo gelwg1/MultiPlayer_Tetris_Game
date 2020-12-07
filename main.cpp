@@ -9,6 +9,14 @@
 using namespace std;
 using namespace sf;
 
+void hhhhh(vector<sf::Text> PList){
+    cout<<"PLIST:  ";
+    for(auto const& value: PList) {
+        cout<<value.getString().toAnsiString()<<"  ";
+    }
+    cout<<endl;
+}
+
 int main()
 {
     int lop=0;
@@ -27,9 +35,7 @@ int main()
             gameroom.vaophong(guest.PList , window);
             if (guest.DoneWaiting == 1)
             {
-                //cout<<"11"<<endl;
                 guest.InitiatePoint();
-                //cout<<"22"<<endl;
                 break;
             }
         }
@@ -48,25 +54,32 @@ int main()
     else if (menu.selectedItemIndex == 1)
     {//-----Become Server--------------------------------
         GameRoom gameroom(window);//Lay ten nguoi choi
-        Server Ngoi(window, gameroom.PName);
+        Server server(window, gameroom.PName);
         while (window.isOpen())//Trong phong Game
         {
-            if (Ngoi.DoneWaiting == 1)
+            if (server.DoneWaiting == 1)
             {
-                Ngoi.BroadcastOK();
+                server.InitiatePoint();
+                server.BroadcastOK();
                 break;
             }
             else
             {
-                Ngoi.Waiting(window);
-                gameroom.vaophong(Ngoi.PList , window);
+                server.Waiting(window);
+                gameroom.vaophong(server.PList , window);
             }
         }
-        Game run;
+        MultiGame run;
         while (window.isOpen())//Vao Game
         {
             run.ChayGame(window);
-            Ngoi.RecScore();
+            run.PrintVector(window, server.PList, server.PPoint);
+            window.display();
+            server.RecScore();
+            // if (run.changescore == 1)
+            // {
+            //     broadcast;
+            // }
         }
     }
     else//----------Single Player---------------

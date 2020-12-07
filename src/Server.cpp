@@ -12,14 +12,15 @@ Server::Server(sf::RenderWindow &window, std::string PName)
     cout<<"listening"<<endl;
     listener.listen(PORT);
     listener.setBlocking(false);
-    takeIn(PName);
+    takeIn(PName);//Dua ten vao Plist
 }
 void Server::Broadcast()
 {
+    packet.clear();
     string mess;
-    for (int j=index-1; j>=0; j--)
+    for (int j=0; j<=index; j++)
     {
-        mess = PList[j].getString();
+        mess = PList[j].getString().toAnsiString();
         packet<<mess;
     }
     for(auto const& value: socket) {
@@ -45,19 +46,6 @@ void Server::Waiting(sf::RenderWindow &window)
         window.close();
         if (e.type == Event::KeyPressed && e.key.code==Keyboard::Enter)
             DoneWaiting = 1;
-        // else if(e.type==Event::TextEntered)
-        // {
-        //     if (e.text.unicode == 13 && index>0)
-        //     {
-        //         packet<<mess;
-        //         for (int j=0; j<index; j++)
-        //         {
-        //     		socket[j]->send(packet);
-        //             mess.clear();
-        //         }
-        //     }
-        //     else mess.push_back(e.text.unicode);
-        // }
     }
     if (listener.accept(*socket[index]) == Socket::Done)//Bug: Rec Scanner
     {
@@ -68,7 +56,6 @@ void Server::Waiting(sf::RenderWindow &window)
         if (str != "")
         {
             cout<<"Player : "+str<<endl;
-
             socket.push_back(make_unique<TcpSocket>());
             index++;
             takeIn(str);
@@ -81,7 +68,7 @@ void Server::Waiting(sf::RenderWindow &window)
         if (status == Socket::Disconnected)
         {
             socket.erase (socket.begin()+j);
-            PList.erase (PList.begin()+j);
+            PList.erase (PList.begin()+j+1);
             index--;
             Broadcast();
         }
@@ -112,4 +99,17 @@ bool Server::RecScore()
         }
     }
     return a;
+}
+void Server::InitiatePoint()
+{
+    for (int i=0; i<PList.size(); i++)
+    {
+        PList[i].setPosition(sf::Vector2f(220, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+        PPoint.push_back(sf::Text());
+        PPoint[i].setFont(font);
+        PPoint[i].setFillColor(sf::Color::Red);
+        PPoint[i].setString("0");
+        PPoint[i].setCharacterSize(20);
+        PPoint[i].setPosition(sf::Vector2f(250, 20+480 /(MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+    }
 }
