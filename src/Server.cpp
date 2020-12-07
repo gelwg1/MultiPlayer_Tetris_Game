@@ -49,10 +49,10 @@ void Server::Waiting(sf::RenderWindow &window)
     }
     if (listener.accept(*socket[index]) == Socket::Done)//Bug: Rec Scanner
     {
-
         socket[index]->setBlocking(false);
         socket[index]->receive(packet);//Read in PName
         packet>>str;
+        packet.clear();
         if (str != "")
         {
             cout<<"Player : "+str<<endl;
@@ -85,20 +85,36 @@ void Server::takeIn(std::string mess)
     PList[index].setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (index+1)));
 }
 
-bool Server::RecScore()
+void Server::RecScore()
 {
-    bool a=0;
     std::string buf;
-    for (int j=0; j<index; j++)
+    for (int j=0; j<=index; j++)
     {
-        if (socket[j]->receive(packet) == Socket::Done)
+        status = socket[j]->receive(packet);
+        if (status == Socket::Done)
         {
             packet>>buf;
-            cout<<buf<<endl;
-            a=1;
+            PPoint[j+1].setString(buf);
+            BroadcastScore(buf, j+1);
+        }
+        else if (status == Socket::Disconnected)
+        {
+            socket.erase (socket.begin()+j);
+            PList.erase (PList.begin()+j+1);
+            PPoint.erase (PPoint.begin()+j+1);
+            index--;
         }
     }
-    return a;
+    packet.clear();
+}
+void Server::BroadcastScore(string buf, int j)
+{
+    packet<<buf;
+    packet<<to_string(j);
+    for(auto const& value: socket) {
+        value->send(packet);
+    }
+    packet.clear();
 }
 void Server::InitiatePoint()
 {

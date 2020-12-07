@@ -13,10 +13,12 @@ class Client
         void SendPoint(string mess);
 		bool ReceiName(sf::RenderWindow &window);
 		void InitiatePoint();
+		void ReceiveScore();
 
 		vector<sf::Text> PList;
 		vector<sf::Text> PPoint;
 		bool DoneWaiting = 0;
+		bool ReceivedName = 0;
 	private:
 		sf::Font font;
 		int index = 0;

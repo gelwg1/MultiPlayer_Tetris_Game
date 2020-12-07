@@ -24,13 +24,20 @@ bool Client::ReceiName(sf::RenderWindow &window)
     }
     if(socket.receive(packet) == Socket::Done)
     {
+        if (ReceivedName != true)
         while(1){
             packet>>buf;
             if (buf == "") break;
             else if(buf == "OK") {DoneWaiting = 1;break;}
             takeOut(buf);
-            index++;
         }
+        else
+        for(int i =0; i<=index;i++){
+            packet>>buf;
+            if (i==index) {takeOut(buf); break;}
+            else if(buf == "OK") {DoneWaiting = 1;break;}
+        }
+        ReceivedName = true;
         return 1;
     }
     return 0;
@@ -44,6 +51,7 @@ void Client::takeOut(std::string mess)
     PList[index].setString(mess);
     PList[index].setCharacterSize(20);
     PList[index].setPosition(sf::Vector2f(20, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (index+1)));
+    index++;
 }
 
 void Client::InitiatePoint()
@@ -57,5 +65,18 @@ void Client::InitiatePoint()
         PPoint[i].setString("0");
         PPoint[i].setCharacterSize(20);
         PPoint[i].setPosition(sf::Vector2f(250, 20+480 /(MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+    }
+}
+void Client::ReceiveScore()
+{
+    packet.clear();
+    if(socket.receive(packet) == Socket::Done)
+    {
+        string mess,mess2;
+        packet>>mess;
+        packet>>mess;
+        packet>>mess2;
+        packet.clear();
+        PPoint[stoi(mess2)].setString(mess);
     }
 }
