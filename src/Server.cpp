@@ -93,6 +93,7 @@ void Server::RecScore()
         status = socket[j]->receive(packet);
         if (status == Socket::Done)
         {
+            buf.clear();
             packet>>buf;
             PPoint[j+1].setString(buf);
             BroadcastScore(buf, j+1);

@@ -48,10 +48,10 @@ int main()
             run.PrintVector(window, server.PList, server.PPoint);
             window.display();
             server.RecScore();//Recei Score fromCLient and send to them all
-            // if (run.changescore == 1)
-            // {
-            //     broadcast;
-            // }
+            if (run.changescore == 1)
+            {
+                server.BroadcastScore(to_string(run.Score), 0);
+            }
         }
     }
     else if (menu.selectedItemIndex == 2)//--Become Guest----------------------
@@ -78,7 +78,7 @@ int main()
             window.display();
             if (run.changescore == 1)
             {
-                guest.SendPoint(to_string(run.Score));                
+                guest.SendPoint(to_string(run.Score));
             }
             guest.ReceiveScore();
         }

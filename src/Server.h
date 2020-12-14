@@ -21,9 +21,9 @@ class Server
 
 		void InitiatePoint();
 		void BroadcastOK();
-		void RecScore();		
-	private:
+		void RecScore();
 		void BroadcastScore(string buf, int j);
+	private:		
 		void Broadcast();
 		void draw(sf::RenderWindow &window);
 		void takeIn(std::string mess);

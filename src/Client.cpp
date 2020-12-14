@@ -72,11 +72,17 @@ void Client::ReceiveScore()
     packet.clear();
     if(socket.receive(packet) == Socket::Done)
     {
-        string mess,mess2;
-        packet>>mess;
-        packet>>mess;
-        packet>>mess2;
+        string mess[3];
+        for(int i=0; i<3; i++){
+            packet>>mess[i];
+        }
+        //packet>>mess;
+        //packet>>mess;
+        //packet>>mess2;
         packet.clear();
-        PPoint[stoi(mess2)].setString(mess);
+		if (mess[2]=="")
+        PPoint[stoi(mess[1])].setString(mess[0]);
+		else 
+        PPoint[stoi(mess[2])].setString(mess[1]);
     }
 }
