@@ -16,14 +16,19 @@ class Server
 		Server(sf::RenderWindow &window,std::string PName);
 		void Waiting(sf::RenderWindow &window);
 		bool DoneWaiting = 0;
+		bool CheckGameOver();
 		vector<sf::Text> PList;
 		vector<sf::Text> PPoint;
+		vector<bool> PGameOver;
+		vector<int> thu_tu;
 
 		void InitiatePoint();
 		void BroadcastOK();
 		void RecScore();
 		void BroadcastScore(string buf, int j);
-	private:		
+		void changeColors(int i);
+		void calculatePoint();
+	private:
 		void Broadcast();
 		void draw(sf::RenderWindow &window);
 		void takeIn(std::string mess);

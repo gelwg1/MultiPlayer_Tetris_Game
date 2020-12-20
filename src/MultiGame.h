@@ -9,12 +9,20 @@ class MultiGame
 {
     public:
     	MultiGame();
+
         void ChayGame(sf::RenderWindow &window);
         void PrintVector(sf::RenderWindow &window,std::vector<sf::Text> PList,
             std::vector<sf::Text> PPoint);
+        void AnoundWinner(sf::RenderWindow &window,std::vector<sf::Text> PList,
+            std::vector<sf::Text> PPoint);
+
+        void calculatePoint(std::vector<sf::Text> PList, std::vector<sf::Text> PPoint);
 
     	int Score;
+
+      bool ss= false;
         bool changescore;
+        bool IsGameOver=0;
     private:
         bool field[NN][MM] = {0};
         struct Point    {int x,y;} Piece[4];
@@ -40,6 +48,6 @@ class MultiGame
         void MoveRows(int i);
         int CountScore(int Point);
         void DeleteRow();
-        void DeathCheck();
+        bool DeathCheck();
 
 };

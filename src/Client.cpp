@@ -76,13 +76,47 @@ void Client::ReceiveScore()
         for(int i=0; i<3; i++){
             packet>>mess[i];
         }
-        //packet>>mess;
-        //packet>>mess;
-        //packet>>mess2;
         packet.clear();
-		if (mess[2]=="")
-        PPoint[stoi(mess[1])].setString(mess[0]);
-		else 
-        PPoint[stoi(mess[2])].setString(mess[1]);
+		if (mess[2]==""){
+            mess[2] = mess[1];
+            mess[1] = mess[0];
+        }
+        if (mess[1]=="death") {
+            PList[stoi(mess[2])].setFillColor(sf::Color::Yellow);
+            PPoint[stoi(mess[2])].setFillColor(sf::Color::Yellow);
+        }
+        else if (mess[1]=="TheGameIsOver"){
+          IsGameOver = 1;
+        }
+        else  PPoint[stoi(mess[2])].setString(mess[1]);
     }
 }
+// void swap(int *a, int*b){
+// 	int *c = a;
+// 	a = b;
+// 	b = c;
+// }
+void Client::calculatePoint(){
+      std::vector<int> sss;
+      int i= 0 ;
+      for(auto const& value: PPoint) {
+          sss.push_back(stoi(value.getString().toAnsiString()));
+          thu_tu.push_back(i);
+          i++;
+      }
+      for(int counterrrs=i-1; counterrrs>=0; counterrrs--){
+    		for (int j = 0; j < counterrrs; j++) {
+    			if (sss[j]<sss[j+1]){
+    				swap(sss[j],sss[j+1]);
+            swap(thu_tu[j],thu_tu[j+1]);
+    			}
+    		}
+    	}
+      i=0;
+      for(auto const& value: thu_tu)
+      {
+          PList[i].setPosition(sf::Vector2f(120, (480 / 7) * (value+1)));
+          PPoint[i].setPosition(sf::Vector2f(150, ((20+480) /7) * (value+1)));
+          i++;
+      }
+    }

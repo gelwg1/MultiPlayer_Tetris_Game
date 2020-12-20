@@ -22,33 +22,48 @@ MultiGame::MultiGame()
 void MultiGame::ChayGame(sf::RenderWindow &window)
 {
     changescore = 0;
-    timecount = clock.getElapsedTime().asSeconds();
-    clock.restart();
-	timer+=timecount;
-	while (window.pollEvent(e))
-	{
-	    if (e.type == Event::Closed)
-		window.close();
-	    if (e.type == Event::KeyPressed)
-		if (e.key.code==Keyboard::Up) Rotate();
-		else if (e.key.code==Keyboard::Left) MoveLeft();
-		else if (e.key.code==Keyboard::Right) MoveRight();
-        else if (e.key.code==Keyboard::Down) delay=0.05;
-    	if (e.type == Event::KeyReleased && e.key.code==Keyboard::Down)
-        delay = 0.4;
-	}
-	if (timer>delay)
-	{
-	    if (canMoveDown())
-		MoveDown();
-	    else
-	    {
-    		DeathCheck();
-    		DeleteRow();
-    		reset();
-	    }
-	    timer=0;
-	}
+    if (IsGameOver==0)
+    {
+        timecount = clock.getElapsedTime().asSeconds();
+        clock.restart();
+    	timer+=timecount;
+    	while (window.pollEvent(e))
+    	{
+    	    if (e.type == Event::Closed)
+    		window.close();
+    	    if (e.type == Event::KeyPressed)
+    		if (e.key.code==Keyboard::Up) Rotate();
+    		else if (e.key.code==Keyboard::Left) MoveLeft();
+    		else if (e.key.code==Keyboard::Right) MoveRight();
+            else if (e.key.code==Keyboard::Down) delay=0.05;
+        	if (e.type == Event::KeyReleased && e.key.code==Keyboard::Down)
+            delay = 0.4;
+    	}
+    	if (timer>delay)
+    	{
+    	    if (canMoveDown())
+    		MoveDown();
+    	    else
+    	    {
+        		if(DeathCheck() && IsGameOver==0){
+              IsGameOver=1;
+              ss = 1;
+            }
+                else{
+        		DeleteRow();
+        		reset();
+                }
+    	    }
+    	    timer=0;
+    	}
+    }
+    else{
+      while (window.pollEvent(e))
+    	{
+    	    if (e.type == Event::Closed)
+    		window.close();
+      }
+    }
 	window.clear();
 	window.draw(background);
 	/*---------DRAW TABLE---------*/
@@ -255,14 +270,15 @@ void MultiGame::DeleteRow()
     if (Point > 0) changescore = 1;
     Score += CountScore(Point);
 }
-void MultiGame::DeathCheck()
+bool MultiGame::DeathCheck()
 {
     for (int i=0; i<4; i++)
 	if (Piece[i].y==0 && Piece[i].x==4)
 	{
 	    cout<<"Final score: "<<Score<<endl;
-	    exit(0);
+	    return 1;
 	}
+    return 0;
 }
 void MultiGame::PrintVector(sf::RenderWindow &window, std::vector<sf::Text> PList,
      std::vector<sf::Text> PPoint)
@@ -273,4 +289,20 @@ void MultiGame::PrintVector(sf::RenderWindow &window, std::vector<sf::Text> PLis
     for(auto const& value: PPoint) {
         window.draw(value);
     }
+}
+void MultiGame::AnoundWinner(sf::RenderWindow &window,std::vector<sf::Text> PList,
+    std::vector<sf::Text> PPoint){
+      while (window.pollEvent(e))
+    	{
+    	    if (e.type == Event::Closed)
+    		window.close();
+      }
+      window.clear();
+      for(auto const& value: PList) {
+          window.draw(value);
+      }
+      for(auto const& value: PPoint) {
+          window.draw(value);
+      }
+      window.display();
 }

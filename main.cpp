@@ -48,10 +48,23 @@ int main()
             run.PrintVector(window, server.PList, server.PPoint);
             window.display();
             server.RecScore();//Recei Score fromCLient and send to them all
-            if (run.changescore == 1)
+            if (run.changescore)
             {
                 server.BroadcastScore(to_string(run.Score), 0);
             }
+            if (run.IsGameOver && run.ss){
+              server.changeColors(0);
+              server.BroadcastScore("death", 0);
+              run.ss==false;
+            }
+            if (server.CheckGameOver()) {
+              server.BroadcastScore("TheGameIsOver", 0);
+              break;
+            }
+        }
+        server.calculatePoint();
+        while(window.isOpen()){
+          run.AnoundWinner(window, server.PList, server.PPoint);
         }
     }
     else if (menu.selectedItemIndex == 2)//--Become Guest----------------------
@@ -80,10 +93,17 @@ int main()
             {
                 guest.SendPoint(to_string(run.Score));
             }
+            if (run.IsGameOver){
+              guest.SendPoint("death");
+            }
             guest.ReceiveScore();
+            if(guest.IsGameOver) break;
+        }
+        guest.calculatePoint();
+        while(window.isOpen()){
+          run.AnoundWinner(window, guest.PList, guest.PPoint);
         }
     }
-
     else//----------Single Player---------------
     {
         Game run;

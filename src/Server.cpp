@@ -95,7 +95,12 @@ void Server::RecScore()
         {
             buf.clear();
             packet>>buf;
-            PPoint[j+1].setString(buf);
+            if (buf == "death") {
+                PList[j+1].setFillColor(sf::Color::Yellow);
+                PPoint[j+1].setFillColor(sf::Color::Yellow);
+                PGameOver[j+1]=1;
+            }
+            else  PPoint[j+1].setString(buf);
             BroadcastScore(buf, j+1);
         }
         else if (status == Socket::Disconnected)
@@ -103,6 +108,7 @@ void Server::RecScore()
             socket.erase (socket.begin()+j);
             PList.erase (PList.begin()+j+1);
             PPoint.erase (PPoint.begin()+j+1);
+            PGameOver.erase (PGameOver.begin()+j+1);
             index--;
         }
     }
@@ -121,6 +127,7 @@ void Server::InitiatePoint()
 {
     for (int i=0; i<PList.size(); i++)
     {
+        PGameOver.push_back(0);
         PList[i].setPosition(sf::Vector2f(220, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
         PPoint.push_back(sf::Text());
         PPoint[i].setFont(font);
@@ -130,3 +137,46 @@ void Server::InitiatePoint()
         PPoint[i].setPosition(sf::Vector2f(250, 20+480 /(MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
     }
 }
+bool Server::CheckGameOver()
+{
+    for(auto const& value: PGameOver) {
+        if(value==0) return 0;
+    }
+    return 1;
+}
+void Server::changeColors(int i)
+{
+    PList[i].setFillColor(sf::Color::Yellow);
+    PPoint[i].setFillColor(sf::Color::Yellow);
+    PGameOver[i]=1;
+}
+
+void swap(int *a, int*b){
+	int *c = a;
+	a = b;
+	b = c;
+}
+void Server::calculatePoint(){
+      std::vector<int> sss;
+      int i= 0 ;
+      for(auto const& value: PPoint) {
+          sss.push_back(stoi(value.getString().toAnsiString()));
+          thu_tu.push_back(i);
+          i++;
+      }
+      for(int counterrrs=i-1; counterrrs>=0; counterrrs--){
+    		for (int j = 0; j < counterrrs; j++) {
+    			if (sss[j]<sss[j+1]){
+    				swap(sss[j],sss[j+1]);
+            swap(thu_tu[j],thu_tu[j+1]);
+    			}
+    		}
+    	}
+      i=0;
+      for(auto const& value: thu_tu)
+      {
+          PList[i].setPosition(sf::Vector2f(120, (480 / 7) * (value+1)));
+          PPoint[i].setPosition(sf::Vector2f(150, ((20+480) /7) * (value+1)));
+          i++;
+      }
+    }

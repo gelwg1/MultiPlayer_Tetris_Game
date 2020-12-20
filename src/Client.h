@@ -10,15 +10,18 @@ class Client
 {
 	public:
 		Client(int PORT);
-        void SendPoint(string mess);
+    void SendPoint(string mess);
 		bool ReceiName(sf::RenderWindow &window);
 		void InitiatePoint();
 		void ReceiveScore();
+		void calculatePoint();
 
 		vector<sf::Text> PList;
 		vector<sf::Text> PPoint;
+		vector<int> thu_tu;
 		bool DoneWaiting = 0;
 		bool ReceivedName = 0;
+		bool IsGameOver = 0;
 	private:
 		sf::Font font;
 		int index = 0;
