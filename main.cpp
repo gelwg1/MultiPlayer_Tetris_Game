@@ -75,7 +75,8 @@ int main()
         guest.SendPoint(gameroom.PName);
         while (window.isOpen())
         {
-            guest.ReceiName(window);
+          if (guest.ReceivedName != true)     guest.ReceiName(window);
+          else guest.Waiting(window);
             gameroom.vaophong(guest.PList , window);
             if (guest.DoneWaiting == 1)
             {

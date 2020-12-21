@@ -21,18 +21,21 @@ bool Client::ReceiName(sf::RenderWindow &window)
     {
         if (e.type == Event::Closed)
         window.close();
+        if (e.type == Event::KeyPressed && e.key.code==Keyboard::R){
+          SendPoint("ready");
+        }
     }
     if(socket.receive(packet) == Socket::Done)
     {
         if (ReceivedName != true)
-        while(1){
+        while(1){// Nhan  danh sach nguoi choi
             packet>>buf;
             if (buf == "") break;
             else if(buf == "OK") {DoneWaiting = 1;break;}
             takeOut(buf);
         }
         else
-        for(int i =0; i<=index;i++){
+        for(int i =0; i<=index;i++){// Nhan ten nguoi choi moi vao
             packet>>buf;
             if (i==index) {takeOut(buf); break;}
             else if(buf == "OK") {DoneWaiting = 1;break;}
@@ -41,6 +44,45 @@ bool Client::ReceiName(sf::RenderWindow &window)
         return 1;
     }
     return 0;
+}
+void Client::deletePlayer(int j)
+{
+  PList.erase (PList.begin()+j);
+  for(int i=0; i<index; i++)
+  {
+    if(i>=j)  PList[index].setPosition(sf::Vector2f(20,
+      480 / (MAX_NUMBER_OF_PLAYERS + 1) * (i)));
+  }
+}
+void Client::Waiting(sf::RenderWindow &window)
+{
+    string buf,buf2;
+    while (window.pollEvent(e))
+    {
+        if (e.type == Event::Closed)
+        window.close();
+        if (e.type == Event::KeyPressed && e.key.code==Keyboard::R){
+          SendPoint("ready");
+        }
+    }
+    if(socket.receive(packet) == Socket::Done)
+    {
+      packet>>buf;
+      packet>>buf2;
+      if(buf == "OK"){
+        DoneWaiting = 1;
+      }
+      else if(buf =="ready"){
+        PList[stoi(buf2)].setFillColor(sf::Color::Green);
+      }
+      else if(buf=="Disconnected"){
+        deletePlayer(stoi(buf2));
+      }
+      else if(buf=="new Player"){
+        packet>>buf;
+        takeOut(buf2);
+      }
+    }
 }
 
 void Client::takeOut(std::string mess)
@@ -59,6 +101,7 @@ void Client::InitiatePoint()
     for (int i=0; i<PList.size(); i++)
     {
         PList[i].setPosition(sf::Vector2f(220, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+        PList[i].setFillColor(sf::Color::Red);
         PPoint.push_back(sf::Text());
         PPoint[i].setFont(font);
         PPoint[i].setFillColor(sf::Color::Red);
@@ -116,7 +159,7 @@ void Client::calculatePoint(){
       for(auto const& value: thu_tu)
       {
           PList[i].setPosition(sf::Vector2f(120, (480 / 7) * (value+1)));
-          PPoint[i].setPosition(sf::Vector2f(150, ((20+480) /7) * (value+1)));
+          PPoint[i].setPosition(sf::Vector2f(140,(20+(480 /7)) * (value+1)));
           i++;
       }
     }

@@ -12,6 +12,7 @@ class Client
 		Client(int PORT);
     void SendPoint(string mess);
 		bool ReceiName(sf::RenderWindow &window);
+		void Waiting(sf::RenderWindow &window);
 		void InitiatePoint();
 		void ReceiveScore();
 		void calculatePoint();
@@ -22,6 +23,7 @@ class Client
 		bool DoneWaiting = 0;
 		bool ReceivedName = 0;
 		bool IsGameOver = 0;
+		bool isReady = 0;
 	private:
 		sf::Font font;
 		int index = 0;
@@ -31,6 +33,7 @@ class Client
         Packet packet;
 
 		void takeOut(std::string mess);
+		void deletePlayer(int j);
 
 
 };
