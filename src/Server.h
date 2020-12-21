@@ -17,6 +17,8 @@ class Server
 		void Waiting(sf::RenderWindow &window);
 		bool DoneWaiting = 0;
 		bool CheckGameOver();
+		bool isReady = 0;
+
 		vector<sf::Text> PList;
 		vector<sf::Text> PPoint;
 		vector<bool> PGameOver;
@@ -29,7 +31,8 @@ class Server
 		void changeColors(int i);
 		void calculatePoint();
 	private:
-		void Broadcast();
+		void BroadcastNewPlayer(string newPlayer);
+		void BroadcastList(int i);
 		void draw(sf::RenderWindow &window);
 		void takeIn(std::string mess);
 

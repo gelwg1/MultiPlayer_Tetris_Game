@@ -14,7 +14,7 @@ Server::Server(sf::RenderWindow &window, std::string PName)
     listener.setBlocking(false);
     takeIn(PName);//Dua ten vao Plist
 }
-void Server::Broadcast()
+void Server::BroadcastList(int i)
 {
     packet.clear();
     string mess;
@@ -23,8 +23,13 @@ void Server::Broadcast()
         mess = PList[j].getString().toAnsiString();
         packet<<mess;
     }
+    int j=0;
     for(auto const& value: socket) {
+      if(j==i){
         value->send(packet);
+        break;
+      }
+      j++;
     }
     packet.clear();
 }
@@ -34,6 +39,19 @@ void Server::BroadcastOK()
     packet<<mess;
     for(auto const& value: socket) {
         value->send(packet);
+    }
+    packet.clear();
+}
+void Server::BroadcastNewPlayer(string newPlayer)
+{
+    int i=0;
+    packet.clear();
+    packet<<"new Player";
+    packet<<newPlayer;
+    for(auto const& value: socket) {
+      if (i>=index - 1) break;
+        value->send(packet);
+        i++;
     }
     packet.clear();
 }
@@ -47,7 +65,7 @@ void Server::Waiting(sf::RenderWindow &window)
         if (e.type == Event::KeyPressed && e.key.code==Keyboard::Enter)
             DoneWaiting = 1;
     }
-    if (listener.accept(*socket[index]) == Socket::Done)//Bug: Rec Scanner
+    if (listener.accept(*socket[index]) == Socket::Done)
     {
         socket[index]->setBlocking(false);
         socket[index]->receive(packet);//Read in PName
@@ -59,7 +77,8 @@ void Server::Waiting(sf::RenderWindow &window)
             socket.push_back(make_unique<TcpSocket>());
             index++;
             takeIn(str);
-            Broadcast();
+            BroadcastList(index-1);
+            BroadcastNewPlayer(str);
         }
     }
     for (int j=0; j<index; j++)
@@ -70,7 +89,15 @@ void Server::Waiting(sf::RenderWindow &window)
             socket.erase (socket.begin()+j);
             PList.erase (PList.begin()+j+1);
             index--;
-            Broadcast();
+            BroadcastScore("Disconnected", j+1);
+        }
+        else if (status == Socket::Done){
+          string buf;
+          packet>>buf;
+          if (buf == "ready") {// receive player ready
+              PList[j+1].setFillColor(sf::Color::Green);
+              BroadcastScore("ready", j+1);
+          }
         }
     }
 }
@@ -95,12 +122,12 @@ void Server::RecScore()
         {
             buf.clear();
             packet>>buf;
-            if (buf == "death") {
+            if (buf == "death") {//Receive Death message
                 PList[j+1].setFillColor(sf::Color::Yellow);
                 PPoint[j+1].setFillColor(sf::Color::Yellow);
                 PGameOver[j+1]=1;
             }
-            else  PPoint[j+1].setString(buf);
+            else  PPoint[j+1].setString(buf);// receive Score
             BroadcastScore(buf, j+1);
         }
         else if (status == Socket::Disconnected)
@@ -116,6 +143,7 @@ void Server::RecScore()
 }
 void Server::BroadcastScore(string buf, int j)
 {
+  packet.clear();
     packet<<buf;
     packet<<to_string(j);
     for(auto const& value: socket) {
@@ -129,6 +157,7 @@ void Server::InitiatePoint()
     {
         PGameOver.push_back(0);
         PList[i].setPosition(sf::Vector2f(220, 480 / (MAX_NUMBER_OF_PLAYERS + 1) * (i+1)));
+        PList[i].setFillColor(sf::Color::Red);
         PPoint.push_back(sf::Text());
         PPoint[i].setFont(font);
         PPoint[i].setFillColor(sf::Color::Red);
@@ -176,7 +205,7 @@ void Server::calculatePoint(){
       for(auto const& value: thu_tu)
       {
           PList[i].setPosition(sf::Vector2f(120, (480 / 7) * (value+1)));
-          PPoint[i].setPosition(sf::Vector2f(150, ((20+480) /7) * (value+1)));
+          PPoint[i].setPosition(sf::Vector2f(140, (20+(480 /7)) * (value+1)));
           i++;
       }
     }
