@@ -5,7 +5,7 @@ Server::Server(sf::RenderWindow &window, std::string PName)
 {
     // TcpSocket socket[5];
     srand((unsigned) time(0));
-    PORT = 7000 + (rand() % 1000);
+    PORT = 8000;
 
     font.loadFromFile("IMG/simplistic_regular.ttf");
     socket.push_back(make_unique<TcpSocket>());
@@ -205,7 +205,7 @@ void Server::calculatePoint(){
       for(auto const& value: thu_tu)
       {
           PList[i].setPosition(sf::Vector2f(120, (480 / 7) * (value+1)));
-          PPoint[i].setPosition(sf::Vector2f(140, (20+(480 /7)) * (value+1)));
+          PPoint[i].setPosition(sf::Vector2f(140, 30+(480 /7) * (value+1)));
           i++;
       }
     }

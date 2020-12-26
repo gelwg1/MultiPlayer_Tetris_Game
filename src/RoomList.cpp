@@ -17,7 +17,7 @@ RoomList::RoomList(sf::RenderWindow &window)
 		if(clock.getElapsedTime().asSeconds()>1)
 		{
 			clock.restart();
-			ScanPort();
+			ScanIP();
 			SetRooms(height);
 		}
 		while (window.pollEvent(e))
@@ -39,31 +39,39 @@ RoomList::RoomList(sf::RenderWindow &window)
 
 bool RoomList::is_port_open(IpAddress ip, int port)
 {
-    return (sf::TcpSocket().connect(ip, port) == sf::Socket::Done);
+
+    bool a=(sf::TcpSocket().connect(ip, port) == sf::Socket::Done);
+
+		return a;
 }
 
-void RoomList::ScanPort()
+void RoomList::ScanIP()
 {
-	rooms.fill(0);
 	int j=0;
-	for (int i=7000; i<=8000; i++)
-	{
-		if (is_port_open(ip, i) && j<7)
-		{
-			rooms[j]=i; j++;
-		}
-	}
+	// for (int i1=1; i1<=255; i1++){
+	// 	for (int i2=1; i2<=255; i2++){
+	// 		string sss = "192.168."+std::to_string(i1)+"."+std::to_string(i2);
+	// 		cout<<sss<<endl;
+	// 		if (is_port_open(sf::IpAddress(sss), 8000) && j<7)
+	// 		{
+	// 			cout<<sss<<endl;
+	// 			rooms.push_back(sss);
+	// 			j++;
+	// 		}
+	// 	}
+	// }
+	//rooms.push_back("192.168.43.59");j++;
 	NumberOfRooms = j;
 }
 void RoomList::SetRooms(float height)
 {
 	int j=0;
 	for(int i=0; i<NumberOfRooms;i++)
-	if (rooms[i]!=0)
+	if (rooms[i]!="")
 	{
 		roomList[j].setFont(font);
 		roomList[j].setFillColor(sf::Color::Red);
-		roomList[j].setString("room  "+ to_string(rooms[i]));
+		roomList[j].setString("room  "+ rooms[i]);
 		roomList[j].setCharacterSize(15);
 		roomList[j].setPosition(sf::Vector2f(50, height / (7 + 1) * j));
 		j++;

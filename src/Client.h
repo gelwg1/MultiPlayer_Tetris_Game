@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
 #include <unistd.h>
@@ -9,7 +9,7 @@ using namespace sf;
 class Client
 {
 	public:
-		Client(int PORT);
+		Client(string roomIP);
     void SendPoint(string mess);
 		bool ReceiName(sf::RenderWindow &window);
 		void Waiting(sf::RenderWindow &window);
@@ -28,7 +28,7 @@ class Client
 		sf::Font font;
 		int index = 0;
 		sf::Event e;
-        IpAddress ip = IpAddress::getLocalAddress();
+        IpAddress ip ;//= IpAddress::getLocalAddress();
         TcpSocket socket;
         Packet packet;
 
