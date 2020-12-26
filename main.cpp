@@ -26,6 +26,7 @@ int main()
     if (menu.selectedItemIndex == 1)
     {//-----Become Server--------------------------------
         GameRoom gameroom(window);//Lay ten nguoi choi
+        gameroom.dienten(window);
         Server server(window, gameroom.PName);
         while (window.isOpen())//Trong phong Game
         {
@@ -50,6 +51,7 @@ int main()
             server.RecScore();//Recei Score fromCLient and send to them all
             if (run.changescore)
             {
+              server.PPoint[0].setString(to_string(run.Score));
                 server.BroadcastScore(to_string(run.Score), 0);
             }
             if (run.IsGameOver && run.ss){
@@ -69,14 +71,23 @@ int main()
     }
     else if (menu.selectedItemIndex == 2)//--Become Guest----------------------
     {
-        RoomList roomlist(window);
+        //RoomList roomlist(window);
         GameRoom gameroom(window);//Lay ten nguoi choi
-        Client guest(roomlist.rooms[roomlist.Index]);//Connect to Sever
+        gameroom.isGuest = true;
+        gameroom.dienten(window);
+        gameroom.IPss.erase (0,1);
+
+        Client guest(gameroom.IPss);//Connect to Sever
+        //Client guest("192.168.1.26");//Connect to Sever
+
         guest.SendPoint(gameroom.PName);
+
         while (window.isOpen())
         {
+
           if (guest.ReceivedName != true)     guest.ReceiName(window);
           else guest.Waiting(window);
+
             gameroom.vaophong(guest.PList , window);
             if (guest.DoneWaiting == 1)
             {

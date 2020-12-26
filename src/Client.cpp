@@ -1,9 +1,13 @@
 #include "Client.h"
 
 
-Client::Client(int PORT)
+Client::Client(std::string roomIP)
 {
+  int PORT= 8000;
     font.loadFromFile("IMG/simplistic_regular.ttf");
+
+    ip=sf::IpAddress(roomIP);
+
     socket.connect(ip, PORT);
     socket.setBlocking(false);
 }
@@ -159,7 +163,7 @@ void Client::calculatePoint(){
       for(auto const& value: thu_tu)
       {
           PList[i].setPosition(sf::Vector2f(120, (480 / 7) * (value+1)));
-          PPoint[i].setPosition(sf::Vector2f(140,(20+(480 /7)) * (value+1)));
+          PPoint[i].setPosition(sf::Vector2f(140,30+(480 /7) * (value+1)));
           i++;
       }
     }

@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+
 #include <string>
 using namespace std;
 using namespace sf;
@@ -10,13 +11,13 @@ class RoomList
 	public:
 		RoomList(sf::RenderWindow &window);
 		int Index;
-		std::array<int, 7> rooms = {0};
+		std::vector<std::string> rooms ;
 
 	private:
-		IpAddress ip = IpAddress::getLocalAddress();
+		//IpAddress ip = IpAddress::getLocalAddress();
 		int NumberOfRooms = 0;
 		bool is_port_open(IpAddress ip, int port);
-		void ScanPort();
+		void ScanIP();
 		void SetRooms(float height);
 		void draw(sf::RenderWindow &window);
 		void MoveUp();
