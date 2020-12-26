@@ -75,7 +75,7 @@ int main()
         GameRoom gameroom(window);//Lay ten nguoi choi
         gameroom.isGuest = true;
         gameroom.dienten(window);
-        gameroom.IPss.erase (0,1);
+        //gameroom.IPss.erase (0,1);
 
         Client guest(gameroom.IPss);//Connect to Sever
         //Client guest("192.168.1.26");//Connect to Sever
