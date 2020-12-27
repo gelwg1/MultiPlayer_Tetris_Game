@@ -72,12 +72,16 @@ void GameRoom::dienten(sf::RenderWindow &window)
 				else if(e.text.unicode==8){
 					if (men!=1){
 						if(state==0)  {
-							PName.pop_back();;
-							playerText.setString(PName);
+							if(PName!=""){
+								PName.pop_back();
+								playerText.setString(PName);
+							}
 						}
 						else {
-							IPss.pop_back();;
-							playerText2.setString(IPss);
+							if(IPss!=""){
+								IPss.pop_back();
+								playerText2.setString(IPss);
+							}
 						}
 					}
 				}
