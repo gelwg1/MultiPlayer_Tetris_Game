@@ -62,8 +62,11 @@ void Server::Waiting(sf::RenderWindow &window)
     {
         if (e.type == Event::Closed)
         window.close();
-        if (e.type == Event::KeyPressed && e.key.code==Keyboard::Enter)
+        if (e.type == Event::KeyPressed && e.key.code==Keyboard::Enter){
+          if(isReady == index){
             DoneWaiting = 1;
+          }
+        }
     }
     if (listener.accept(*socket[index]) == Socket::Done)
     {
@@ -95,6 +98,7 @@ void Server::Waiting(sf::RenderWindow &window)
           string buf;
           packet>>buf;
           if (buf == "ready") {// receive player ready
+            isReady++;
               PList[j+1].setFillColor(sf::Color::Green);
               BroadcastScore("ready", j+1);
           }

@@ -17,7 +17,7 @@ class Server
 		void Waiting(sf::RenderWindow &window);
 		bool DoneWaiting = 0;
 		bool CheckGameOver();
-		bool isReady = 0;
+		int isReady = 0;
 
 		vector<sf::Text> PList;
 		vector<sf::Text> PPoint;
