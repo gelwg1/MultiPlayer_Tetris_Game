@@ -63,7 +63,7 @@ void Game::ChayGame(sf::RenderWindow &window)
 	}
 	window.clear();
 	window.draw(background);
-	/*---------DRAW TABLE---------*/
+	/*----------DRAW TABLE----------*/
 	for (int i=0;i<N;i++)
 	    for (int j=0;j<M;j++)
 		if (field[i][j]==1)
